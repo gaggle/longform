@@ -17,7 +17,7 @@ export const WriteToNoteStep = makeBuiltinStep({
         id: "target",
         name: "Output path",
         description:
-          "Path for the created manuscript note, relative to your project. $1 will be replaced with your project’s title.",
+          "Path for the created manuscript note. Paths starting with '/' are relative to your vault root; otherwise relative to your project. $1 will be replaced with your project's title.",
         type: CompileStepOptionType.Text,
         default: "manuscript.md",
       },
@@ -95,8 +95,8 @@ function resolvePath(projectPath: string, filePath: string): string {
 
   if (!filePath.startsWith(".")) {
     if (filePath.startsWith("/")) {
-      // handle file path like: /filename.md
-      return normalizePath(`${projectPath}${filePath}`);
+      // Absolute path from vault root - strip leading slash
+      return normalizePath(filePath.substring(1));
     }
     return normalizePath(`${projectPath}/${filePath}`);
   }
